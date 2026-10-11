@@ -8,19 +8,25 @@ import (
 	"strings"
 
 	"vyshkat/domain"
-	"vyshkat/service"
 
 	"go.uber.org/fx"
 )
 
+type FleetOperations interface {
+	AddItem(item domain.InventoryItem) error
+	AllItems() []domain.InventoryItem
+	TotalDailyEnergy() float64
+	BeginnerFriendlyItems() []domain.Transport
+}
+
 type Console struct {
-	fleet      *service.FleetService
+	fleet      FleetOperations
 	scanner    *bufio.Scanner
 	shutdowner fx.Shutdowner
 }
 
 func NewConsole(
-	fleet *service.FleetService,
+	fleet FleetOperations,
 	shutdowner fx.Shutdowner,
 ) *Console {
 	return &Console{

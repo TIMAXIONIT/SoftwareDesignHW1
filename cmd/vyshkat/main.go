@@ -1,7 +1,19 @@
 package main
 
-import "vyshkat/di"
+import (
+	"flag"
+
+	"vyshkat/di"
+)
 
 func main() {
-	di.NewContainer().Run()
+	demoInspection := flag.Bool(
+		"demo-rejection",
+		false,
+		"включить демонстрационные отказы техосмотра",
+	)
+
+	flag.Parse()
+
+	di.NewContainer(*demoInspection).Run()
 }

@@ -33,6 +33,22 @@ func (s *FleetService) AddItem(
 		return fmt.Errorf("инвентарный номер не может быть пустым")
 	}
 
+	if transport, ok := item.(domain.Transport); ok {
+		level := transport.BeginnerLevel()
+		if level < 1 || level > 10 {
+			return fmt.Errorf(
+				"уровень простоты должен быть от 1 до 10, получено %d",
+				level,
+			)
+		}
+	}
+
+	if consumer, ok := item.(domain.EnergyConsumer); ok {
+		if consumer.DailyEnergyConsumption() < 0 {
+			return fmt.Errorf("энергопотребление не может быть отрицательным")
+		}
+	}
+
 	if _, exists := s.inventory.FindByInventoryNumber(number); exists {
 		return fmt.Errorf(
 			"инвентарный номер %q уже занят",
